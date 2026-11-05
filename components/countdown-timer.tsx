@@ -107,27 +107,27 @@ export function CountdownTimer() {
   ];
 
   return (
-    <div className="flex flex-col items-center my-6">
-      <div className="flex items-center gap-2 sm:gap-3">
+    <div className="flex flex-col items-center my-4 sm:my-6 w-full px-2">
+      <div className="flex items-center justify-center gap-1.5 sm:gap-3 w-full max-w-sm sm:max-w-none">
         {timeBlocks.map((block, idx) => (
           <div key={idx} className="flex items-center">
-            <div className="flex flex-col items-center justify-center w-16 sm:w-20 md:w-24 h-20 sm:h-24 rounded-xl bg-gradient-to-b from-slate-900/90 to-slate-950/90 border border-amber-500/30 shadow-lg shadow-amber-500/5 backdrop-blur-md transition-transform hover:border-amber-400/60">
-              <span className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight font-mono text-amber-200 drop-shadow-[0_0_12px_rgba(212,175,55,0.4)]">
+            <div className="flex flex-col items-center justify-center w-14 sm:w-20 md:w-24 h-18 sm:h-24 rounded-xl bg-gradient-to-b from-slate-900/90 to-slate-950/90 border border-amber-500/30 shadow-lg shadow-amber-500/5 backdrop-blur-md transition-transform hover:border-amber-400/60">
+              <span className="text-xl sm:text-3xl md:text-4xl font-extrabold tracking-tight font-mono text-amber-200 drop-shadow-[0_0_12px_rgba(212,175,55,0.4)]">
                 {block.value}
               </span>
-              <span className="text-[9px] sm:text-[10px] font-bold tracking-widest text-slate-400 uppercase mt-1">
+              <span className="text-[8px] sm:text-[10px] font-bold tracking-widest text-slate-400 uppercase mt-0.5 sm:mt-1">
                 {block.label}
               </span>
             </div>
             {idx < timeBlocks.length - 1 && (
-              <span className="text-amber-400/60 font-bold text-lg sm:text-2xl mx-1 sm:mx-1.5 animate-pulse">
+              <span className="text-amber-400/60 font-bold text-sm sm:text-2xl mx-0.5 sm:mx-1.5 animate-pulse">
                 :
               </span>
             )}
           </div>
         ))}
       </div>
-      <p className="text-[11px] text-amber-400/70 tracking-widest uppercase mt-3 font-medium">
+      <p className="text-[10px] sm:text-[11px] text-amber-400/70 tracking-widest uppercase mt-3 font-medium text-center">
         Countdown to Premiere • {EVENT_CONSTANTS.VENUE}
       </p>
     </div>

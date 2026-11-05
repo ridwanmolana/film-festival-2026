@@ -14,30 +14,30 @@ interface HeroSectionProps {
 
 export function HeroSection({ films }: HeroSectionProps) {
   return (
-    <section className="relative overflow-hidden pt-12 pb-24 px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center justify-center">
+    <section className="relative overflow-hidden pt-8 sm:pt-12 pb-16 sm:pb-24 px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center justify-center w-full">
       {/* Cinematic Spotlight Ambient Lighting (PRD Section 9) */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] bg-gradient-to-b from-amber-500/15 via-yellow-500/5 to-transparent rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-1/3 left-10 w-72 h-72 bg-blue-900/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-1/3 right-10 w-72 h-72 bg-amber-600/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[320px] sm:w-[700px] h-[300px] sm:h-[400px] bg-gradient-to-b from-amber-500/15 via-yellow-500/5 to-transparent rounded-full blur-3xl pointer-events-none" />
+      <div className="hidden sm:block absolute top-1/3 left-10 w-72 h-72 bg-blue-900/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="hidden sm:block absolute top-1/3 right-10 w-72 h-72 bg-amber-600/10 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="relative z-10 max-w-5xl mx-auto space-y-6">
+      <div className="relative z-10 max-w-5xl mx-auto space-y-6 w-full">
         {/* Official Event Logo & Crest (PRD Section 4A) */}
         <motion.div
           initial={{ opacity: 0, scale: 0.85 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6 }}
-          className="inline-flex items-center gap-3 p-1.5 pr-4 rounded-full bg-slate-900/80 border border-amber-500/40 shadow-xl shadow-amber-500/10 backdrop-blur-md"
+          className="inline-flex items-center gap-2.5 sm:gap-3 p-1 sm:p-1.5 pr-3.5 sm:pr-4 rounded-full bg-slate-900/80 border border-amber-500/40 shadow-xl shadow-amber-500/10 backdrop-blur-md max-w-full"
         >
-          <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#d4af37] via-[#f3d375] to-[#aa8620] p-0.5 flex items-center justify-center shadow-md">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-tr from-[#d4af37] via-[#f3d375] to-[#aa8620] p-0.5 flex items-center justify-center shadow-md flex-shrink-0">
             <div className="w-full h-full bg-[#060913] rounded-full flex items-center justify-center">
-              <FilmIcon className="w-5 h-5 text-amber-300" />
+              <FilmIcon className="w-4 h-4 sm:w-5 sm:h-5 text-amber-300" />
             </div>
           </div>
           <div className="text-left">
-            <div className="text-[11px] font-bold tracking-widest text-amber-300 uppercase">
+            <div className="text-[10px] sm:text-[11px] font-bold tracking-widest text-amber-300 uppercase">
               {EVENT_CONSTANTS.SCHOOL}
             </div>
-            <div className="text-[10px] text-slate-400">
+            <div className="text-[9px] sm:text-[10px] text-slate-400">
               Official Interactive Event Portal
             </div>
           </div>
@@ -48,16 +48,16 @@ export function HeroSection({ films }: HeroSectionProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.15 }}
-          className="space-y-3"
+          className="space-y-3 px-2"
         >
-          <h1 className="text-4xl sm:text-6xl md:text-7xl font-black tracking-tight text-white uppercase drop-shadow-sm">
-            <span>{EVENT_CONSTANTS.TITLE}</span>
-            <span className="block gold-gradient-text text-3xl sm:text-5xl md:text-6xl mt-2 font-serif italic normal-case tracking-normal">
+          <h1 className="text-3xl sm:text-6xl md:text-7xl font-black tracking-tight text-white uppercase drop-shadow-sm break-words">
+            <span className="block">{EVENT_CONSTANTS.TITLE}</span>
+            <span className="block gold-gradient-text text-2xl sm:text-5xl md:text-6xl mt-1 sm:mt-2 font-serif italic normal-case tracking-normal">
               Grand Cinematic Awards
             </span>
           </h1>
 
-          <p className="max-w-2xl mx-auto text-sm sm:text-base text-slate-300 leading-relaxed font-light pt-2">
+          <p className="max-w-2xl mx-auto text-xs sm:text-base text-slate-300 leading-relaxed font-light pt-2 px-1">
             Showcasing ten student-produced films from SMP Global Prestasi Bekasi.
             Experience young creative vision, cast your audience prediction for Best Picture,
             and join the grand celebration.
@@ -101,16 +101,16 @@ export function HeroSection({ films }: HeroSectionProps) {
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.45 }}
-          className="pt-4 flex flex-wrap items-center justify-center gap-4"
+          className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 w-full px-4"
         >
-          <a href={ROUTES.FILM_SHOWCASE}>
-            <Button variant="gold" size="lg" className="text-sm font-bold tracking-wide">
+          <a href={ROUTES.FILM_SHOWCASE} className="w-full sm:w-auto">
+            <Button variant="gold" size="lg" className="w-full sm:w-auto text-sm font-bold tracking-wide">
               <FilmIcon className="w-4 h-4 mr-2" />
               Explore Films (10)
             </Button>
           </a>
-          <a href={ROUTES.VOTING}>
-            <Button variant="outline" size="lg" className="text-sm font-semibold tracking-wide">
+          <a href={ROUTES.VOTING} className="w-full sm:w-auto">
+            <Button variant="outline" size="lg" className="w-full sm:w-auto text-sm font-semibold tracking-wide">
               <Award className="w-4 h-4 mr-2" />
               Predict the Best Picture
             </Button>
