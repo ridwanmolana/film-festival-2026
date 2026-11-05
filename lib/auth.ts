@@ -30,9 +30,6 @@ export async function isAuthenticatedAdmin(): Promise<boolean> {
   return Boolean(user);
 }
 
-/**
- * Client-side admin sign out helper
- */
 export async function signOutAdmin() {
   const supabase = createBrowserSupabase();
   return await supabase.auth.signOut();

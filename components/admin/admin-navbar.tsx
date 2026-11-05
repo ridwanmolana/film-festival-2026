@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { EVENT_CONSTANTS } from "@/lib/constants";
-import { signOutAdmin } from "@/lib/auth";
+import { signOutAdmin } from "@/lib/auth-client";
 import {
   Film,
   Shield,
@@ -176,3 +176,4 @@ export function AdminNavbar() {
     </header>
   );
 }
+
