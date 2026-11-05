@@ -6,9 +6,9 @@ import { HeroSection } from "@/components/hero-section";
 import { FilmShowcase } from "@/components/film-showcase";
 import { PredictionVoting } from "@/components/prediction-voting";
 import { CommunityComments } from "@/components/community-comments";
-import { Button } from "@/components/ui/button";
+import { PublicNavbar } from "@/components/public-navbar";
 import { Badge } from "@/components/ui/badge";
-import { Film, Calendar, MapPin, Sparkles, Shield } from "lucide-react";
+import { Calendar, MapPin, Sparkles } from "lucide-react";
 import Link from "next/link";
 
 export default async function HomePage() {
@@ -21,53 +21,8 @@ export default async function HomePage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#060913] text-slate-100">
-      {/* Sticky Cinematic Navigation */}
-      <header className="sticky top-0 z-50 backdrop-blur-md bg-[#060913]/90 border-b border-amber-500/20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <Link href={ROUTES.HOME} className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#d4af37] via-[#f3d375] to-[#aa8620] p-0.5 flex items-center justify-center shadow-lg shadow-amber-500/20">
-              <div className="w-full h-full bg-[#060913] rounded-full flex items-center justify-center">
-                <Film className="w-5 h-5 text-amber-300" />
-              </div>
-            </div>
-            <div>
-              <span className="font-bold text-sm tracking-wider uppercase text-white">
-                Film Festival Awards
-              </span>
-              <span className="text-xs text-amber-400 font-semibold ml-1.5">
-                2026
-              </span>
-            </div>
-          </Link>
-
-          <nav className="hidden md:flex items-center gap-6 text-xs uppercase tracking-widest text-slate-300 font-medium">
-            <a href={ROUTES.HOME} className="text-amber-300 hover:text-amber-200 transition-colors">
-              Home
-            </a>
-            <a href={ROUTES.FILM_SHOWCASE} className="hover:text-amber-300 transition-colors">
-              Films (10)
-            </a>
-            <a href={ROUTES.VOTING} className="hover:text-amber-300 transition-colors">
-              Best Picture Prediction
-            </a>
-            <a href={ROUTES.COMMUNITY} className="hover:text-amber-300 transition-colors">
-              Community
-            </a>
-            <a href={ROUTES.EVENT_INFO} className="hover:text-amber-300 transition-colors">
-              Event Info
-            </a>
-          </nav>
-
-          <div className="flex items-center gap-3">
-            <Link href={ROUTES.ADMIN_LOGIN}>
-              <Button variant="outline" size="sm" className="text-xs">
-                <Shield className="w-3.5 h-3.5 mr-1" />
-                Admin
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </header>
+      {/* Sticky Cinematic Navigation with Mobile Menu */}
+      <PublicNavbar />
 
       {/* Hero Section (PRD Section 4A) */}
       <HeroSection films={films} />
