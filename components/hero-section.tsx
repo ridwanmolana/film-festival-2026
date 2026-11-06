@@ -42,8 +42,7 @@ export function HeroSection({ films }: HeroSectionProps) {
               className="w-auto h-36 sm:h-56 md:h-64 object-contain filter drop-shadow-[0_12px_30px_rgba(212,175,55,0.45)] transition-transform duration-500 hover:scale-105"
             />
           </div>
-
-         
+        </motion.div>
 
         {/* Event Title & Tagline (PRD Section 4A & 9) */}
         <motion.div
@@ -53,7 +52,7 @@ export function HeroSection({ films }: HeroSectionProps) {
           className="space-y-3 px-2"
         >
           <h1 className="text-3xl sm:text-6xl md:text-7xl font-black tracking-tight text-white uppercase drop-shadow-sm break-words">
-          
+
             <span className="block gold-gradient-text text-2xl sm:text-5xl md:text-6xl mt-1 sm:mt-2 font-serif italic normal-case tracking-normal">
               Grand Cinematic Awards
             </span>
