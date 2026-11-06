@@ -25,21 +25,29 @@ export function HeroSection({ films }: HeroSectionProps) {
         <motion.div
           initial={{ opacity: 0, scale: 0.85 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6 }}
-          className="inline-flex items-center gap-2.5 sm:gap-3 p-1 sm:p-1.5 pr-3.5 sm:pr-4 rounded-full bg-slate-900/80 border border-amber-500/40 shadow-xl shadow-amber-500/10 backdrop-blur-md max-w-full"
+          transition={{ duration: 0.7 }}
+          className="flex flex-col items-center justify-center pt-2 pb-4"
         >
-          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-tr from-[#d4af37] via-[#f3d375] to-[#aa8620] p-0.5 flex items-center justify-center shadow-md flex-shrink-0">
-            <div className="w-full h-full bg-[#060913] rounded-full flex items-center justify-center">
-              <FilmIcon className="w-4 h-4 sm:w-5 sm:h-5 text-amber-300" />
+          <div className="relative group">
+            {/* Cinematic Golden Ambient Glow behind logo */}
+            <div className="absolute -inset-4 sm:-inset-6 bg-gradient-to-r from-amber-500/30 via-yellow-400/25 to-amber-600/30 rounded-3xl blur-2xl opacity-75 group-hover:opacity-100 transition duration-700 pointer-events-none" />
+            
+            <div className="relative flex items-center justify-center p-3 sm:p-5 rounded-2xl sm:rounded-3xl bg-gradient-to-b from-slate-900/90 to-[#060913]/95 border border-amber-500/40 shadow-2xl shadow-amber-500/20 backdrop-blur-xl">
+              <Image
+                src="/logo.png"
+                alt={`${EVENT_CONSTANTS.TITLE} - ${EVENT_CONSTANTS.SCHOOL}`}
+                width={400}
+                height={200}
+                priority
+                className="w-auto h-28 sm:h-44 md:h-52 object-contain drop-shadow-[0_10px_25px_rgba(212,175,55,0.35)] transition-transform duration-500 hover:scale-105"
+              />
             </div>
           </div>
-          <div className="text-left">
-            <div className="text-[10px] sm:text-[11px] font-bold tracking-widest text-amber-300 uppercase">
-              {EVENT_CONSTANTS.SCHOOL}
-            </div>
-            <div className="text-[9px] sm:text-[10px] text-slate-400">
-              Official Interactive Event Portal
-            </div>
+
+          <div className="mt-3 sm:mt-4 inline-flex items-center gap-2 px-3 sm:px-4 py-1 rounded-full bg-slate-900/70 border border-amber-500/30 text-[10px] sm:text-xs text-amber-300 tracking-widest uppercase font-semibold backdrop-blur-sm">
+            <span>{EVENT_CONSTANTS.SCHOOL}</span>
+            <span className="text-amber-500">•</span>
+            <span className="text-slate-300">Official Event Portal</span>
           </div>
         </motion.div>
 
