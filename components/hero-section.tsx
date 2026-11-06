@@ -23,28 +23,27 @@ export function HeroSection({ films }: HeroSectionProps) {
       <div className="relative z-10 max-w-5xl mx-auto space-y-6 w-full">
         {/* Official Event Logo & Crest (PRD Section 4A) */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.85 }}
+          initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.7 }}
-          className="flex flex-col items-center justify-center pt-2 pb-4"
+          className="flex flex-col items-center justify-center pt-2 pb-2"
         >
-          <div className="relative group">
-            {/* Cinematic Golden Ambient Glow behind logo */}
-            <div className="absolute -inset-4 sm:-inset-6 bg-gradient-to-r from-amber-500/30 via-yellow-400/25 to-amber-600/30 rounded-3xl blur-2xl opacity-75 group-hover:opacity-100 transition duration-700 pointer-events-none" />
-            
-            <div className="relative flex items-center justify-center p-3 sm:p-5 rounded-2xl sm:rounded-3xl bg-gradient-to-b from-slate-900/90 to-[#060913]/95 border border-amber-500/40 shadow-2xl shadow-amber-500/20 backdrop-blur-xl">
-              <Image
-                src="/logo.png"
-                alt={`${EVENT_CONSTANTS.TITLE} - ${EVENT_CONSTANTS.SCHOOL}`}
-                width={400}
-                height={200}
-                priority
-                className="w-auto h-28 sm:h-44 md:h-52 object-contain drop-shadow-[0_10px_25px_rgba(212,175,55,0.35)] transition-transform duration-500 hover:scale-105"
-              />
-            </div>
+          <div className="relative flex items-center justify-center group">
+            {/* Cinematic Golden Ambient Glow behind logo to make it outstanding */}
+            <div className="absolute inset-0 w-48 sm:w-80 h-48 sm:h-80 bg-gradient-to-tr from-amber-500/25 via-yellow-400/20 to-amber-600/25 rounded-full blur-3xl pointer-events-none -z-10 group-hover:scale-110 transition-transform duration-700" />
+
+            {/* Standalone Logo without frame/card border */}
+            <Image
+              src="/logo.png"
+              alt={`${EVENT_CONSTANTS.TITLE} - ${EVENT_CONSTANTS.SCHOOL}`}
+              width={520}
+              height={260}
+              priority
+              className="w-auto h-36 sm:h-56 md:h-64 object-contain filter drop-shadow-[0_12px_30px_rgba(212,175,55,0.45)] transition-transform duration-500 hover:scale-105"
+            />
           </div>
 
-          <div className="mt-3 sm:mt-4 inline-flex items-center gap-2 px-3 sm:px-4 py-1 rounded-full bg-slate-900/70 border border-amber-500/30 text-[10px] sm:text-xs text-amber-300 tracking-widest uppercase font-semibold backdrop-blur-sm">
+          <div className="mt-4 sm:mt-5 inline-flex items-center gap-2 px-3.5 sm:px-4 py-1.5 rounded-full bg-slate-900/60 border border-amber-500/30 text-[10px] sm:text-xs text-amber-300 tracking-widest uppercase font-semibold backdrop-blur-md shadow-lg shadow-black/40">
             <span>{EVENT_CONSTANTS.SCHOOL}</span>
             <span className="text-amber-500">•</span>
             <span className="text-slate-300">Official Event Portal</span>
