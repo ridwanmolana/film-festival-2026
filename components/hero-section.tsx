@@ -43,12 +43,7 @@ export function HeroSection({ films }: HeroSectionProps) {
             />
           </div>
 
-          <div className="mt-4 sm:mt-5 inline-flex items-center gap-2 px-3.5 sm:px-4 py-1.5 rounded-full bg-slate-900/60 border border-amber-500/30 text-[10px] sm:text-xs text-amber-300 tracking-widest uppercase font-semibold backdrop-blur-md shadow-lg shadow-black/40">
-            <span>{EVENT_CONSTANTS.SCHOOL}</span>
-            <span className="text-amber-500">•</span>
-            <span className="text-slate-300">Official Event Portal</span>
-          </div>
-        </motion.div>
+         
 
         {/* Event Title & Tagline (PRD Section 4A & 9) */}
         <motion.div
@@ -58,7 +53,7 @@ export function HeroSection({ films }: HeroSectionProps) {
           className="space-y-3 px-2"
         >
           <h1 className="text-3xl sm:text-6xl md:text-7xl font-black tracking-tight text-white uppercase drop-shadow-sm break-words">
-            <span className="block">{EVENT_CONSTANTS.TITLE}</span>
+          
             <span className="block gold-gradient-text text-2xl sm:text-5xl md:text-6xl mt-1 sm:mt-2 font-serif italic normal-case tracking-normal">
               Grand Cinematic Awards
             </span>
