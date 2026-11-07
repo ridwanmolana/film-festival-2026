@@ -1,6 +1,7 @@
 import { getFilms } from "@/lib/films";
 import { getVotingStatus, getVotingStatistics } from "@/lib/voting";
 import { getApprovedComments } from "@/lib/comments";
+import { getEventSettingsAdmin } from "@/lib/admin/event";
 import { EVENT_CONSTANTS, ROUTES } from "@/lib/constants";
 import { HeroSection } from "@/components/hero-section";
 import { FilmShowcase } from "@/components/film-showcase";
@@ -12,11 +13,12 @@ import { Calendar, MapPin, Sparkles } from "lucide-react";
 import Link from "next/link";
 
 export default async function HomePage() {
-  const [films, votingStatus, votingStats, comments] = await Promise.all([
+  const [films, votingStatus, votingStats, comments, eventSettings] = await Promise.all([
     getFilms(),
     getVotingStatus(),
     getVotingStatistics(),
     getApprovedComments(),
+    getEventSettingsAdmin(),
   ]);
 
   return (
@@ -25,7 +27,7 @@ export default async function HomePage() {
       <PublicNavbar />
 
       {/* Hero Section (PRD Section 4A) */}
-      <HeroSection films={films} />
+      <HeroSection films={films} trailerUrl={eventSettings?.trailer_url} />
 
       {/* Film Showcase Section (PRD Section 4B: Display all 10 films on one page) */}
       <section id="films" className="py-24 border-t border-slate-800/80 bg-slate-950/50 px-4 sm:px-6 lg:px-8">

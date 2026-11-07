@@ -54,6 +54,7 @@ export interface UpdateEventSettingsInput {
   venue?: string;
   tagline?: string;
   description?: string;
+  trailer_url?: string | null;
   is_published?: boolean;
 }
 
@@ -76,6 +77,7 @@ export async function updateEventSettings(
     if (input.venue !== undefined) payload.venue = input.venue.trim();
     if (input.tagline !== undefined) payload.tagline = input.tagline.trim();
     if (input.description !== undefined) payload.description = input.description.trim();
+    if (input.trailer_url !== undefined) payload.trailer_url = input.trailer_url ? input.trailer_url.trim() : null;
     if (input.is_published !== undefined) {
       payload.is_published = input.is_published;
       if (input.is_published) {

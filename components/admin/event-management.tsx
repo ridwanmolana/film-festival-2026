@@ -13,6 +13,7 @@ import {
   AlertCircle,
   Globe,
   Lock,
+  Play,
 } from "lucide-react";
 
 interface EventManagementProps {
@@ -27,6 +28,7 @@ export function EventManagement({ initialSettings }: EventManagementProps) {
     venue: initialSettings.venue,
     tagline: initialSettings.tagline,
     description: initialSettings.description,
+    trailer_url: initialSettings.trailer_url || "",
     is_published: initialSettings.is_published,
   });
 
@@ -193,6 +195,25 @@ export function EventManagement({ initialSettings }: EventManagementProps) {
                 className="w-full h-10 pl-9 pr-3 rounded-lg bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:border-amber-400"
               />
             </div>
+          </div>
+
+          <div className="sm:col-span-2">
+            <label className="block text-xs font-medium text-slate-300 mb-1">
+              Official Event Trailer URL (YouTube / Video Link)
+            </label>
+            <div className="relative">
+              <Play className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <input
+                type="url"
+                placeholder="https://www.youtube.com/watch?v=..."
+                value={form.trailer_url || ""}
+                onChange={(e) => setForm({ ...form, trailer_url: e.target.value })}
+                className="w-full h-10 pl-9 pr-3 rounded-lg bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:border-amber-400"
+              />
+            </div>
+            <p className="text-[11px] text-slate-400 mt-1">
+              Jika diisi, tombol &quot;Watch Trailer&quot; akan otomatis aktif dan muncul di Hero Section homepage.
+            </p>
           </div>
 
           <div className="sm:col-span-2">

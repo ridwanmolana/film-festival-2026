@@ -5,14 +5,18 @@ import type { Film } from "@/types";
 import { EVENT_CONSTANTS, ROUTES } from "@/lib/constants";
 import { CountdownTimer } from "@/components/countdown-timer";
 import { Button } from "@/components/ui/button";
-import { Film as FilmIcon, Calendar, MapPin, Award, ChevronDown, Sparkles } from "lucide-react";
+import { Film as FilmIcon, Calendar, MapPin, Award, ChevronDown, Sparkles, Play } from "lucide-react";
 import { motion } from "motion/react";
 
 interface HeroSectionProps {
   films: Film[];
+  trailerUrl?: string | null;
 }
 
-export function HeroSection({ films }: HeroSectionProps) {
+export function HeroSection({ films, trailerUrl }: HeroSectionProps) {
+  // Use event trailer if provided, otherwise fallback to first film's trailer
+  const activeTrailerUrl = trailerUrl || films[0]?.trailer_url || null;
+
   return (
     <section className="relative overflow-hidden pt-8 sm:pt-12 pb-16 sm:pb-24 px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center justify-center w-full">
       {/* Cinematic Spotlight Ambient Lighting (PRD Section 9) */}
@@ -52,7 +56,6 @@ export function HeroSection({ films }: HeroSectionProps) {
           className="space-y-3 px-2"
         >
           <h1 className="text-3xl sm:text-6xl md:text-7xl font-black tracking-tight text-white uppercase drop-shadow-sm break-words">
-
             <span className="block gold-gradient-text text-2xl sm:text-5xl md:text-6xl mt-1 sm:mt-2 font-serif italic normal-case tracking-normal">
               Grand Cinematic Awards
             </span>
@@ -116,6 +119,17 @@ export function HeroSection({ films }: HeroSectionProps) {
               Predict the Best Picture
             </Button>
           </a>
+          {activeTrailerUrl && (
+            <Button
+              variant="outline"
+              size="lg"
+              className="w-full sm:w-auto text-sm font-medium tracking-wide border-amber-500/40 text-amber-300 hover:bg-amber-500/10"
+              onClick={() => window.open(activeTrailerUrl, "_blank")}
+            >
+              <Play className="w-4 h-4 mr-2" />
+              Watch Trailer
+            </Button>
+          )}
         </motion.div>
 
         {/* Featured Movie Posters Ribbon (PRD Section 4A: Featured movie posters) */}
@@ -172,4 +186,3 @@ export function HeroSection({ films }: HeroSectionProps) {
     </section>
   );
 }
-

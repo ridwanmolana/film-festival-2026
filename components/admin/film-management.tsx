@@ -37,6 +37,7 @@ export function FilmManagement({ initialFilms }: FilmManagementProps) {
       duration: "12 mins",
       short_description: "",
       poster_url: "",
+      trailer_url: "",
       display_order: films.length + 1,
       crew: [
         { name: "", role: "Director" },
@@ -54,6 +55,7 @@ export function FilmManagement({ initialFilms }: FilmManagementProps) {
       duration: film.duration || "",
       short_description: film.short_description,
       poster_url: film.poster_url || "",
+      trailer_url: film.trailer_url || "",
       display_order: film.display_order,
       crew: film.crew.length > 0 ? film.crew : [{ name: "", role: "Director" }],
     });
@@ -80,6 +82,7 @@ export function FilmManagement({ initialFilms }: FilmManagementProps) {
             duration: editingFilm.duration,
             short_description: editingFilm.short_description,
             poster_url: editingFilm.poster_url,
+            trailer_url: editingFilm.trailer_url,
             display_order: Number(editingFilm.display_order) || 0,
             crew: editingFilm.crew,
             created_at: new Date().toISOString(),
@@ -98,6 +101,7 @@ export function FilmManagement({ initialFilms }: FilmManagementProps) {
                       duration: editingFilm.duration,
                       short_description: editingFilm.short_description,
                       poster_url: editingFilm.poster_url,
+                      trailer_url: editingFilm.trailer_url,
                       display_order: Number(editingFilm.display_order) || 0,
                       crew: editingFilm.crew,
                       updated_at: new Date().toISOString(),
@@ -164,7 +168,7 @@ export function FilmManagement({ initialFilms }: FilmManagementProps) {
             <Badge variant="gold">{films.length} Films</Badge>
           </h2>
           <p className="text-xs text-slate-400 mt-0.5">
-            Manage participating films, synopsis, posters, crew, and display order.
+            Manage participating films, synopsis, posters, trailers, crew, and display order.
           </p>
         </div>
 
@@ -219,7 +223,7 @@ export function FilmManagement({ initialFilms }: FilmManagementProps) {
                   <FilmIcon className="w-6 h-6" />
                 </div>
               )}
-              <div className="absolute top-1 left-1 bg-black/80 text-amber-300 px-1 py-0.2 rounded text-[10px] font-bold">
+              <div className="absolute top-1 left-1 bg-black/80 text-amber-300 px-1 py-0.5 rounded text-[10px] font-bold">
                 #{film.display_order}
               </div>
             </div>
@@ -258,6 +262,9 @@ export function FilmManagement({ initialFilms }: FilmManagementProps) {
                       <Clock className="w-3 h-3" />
                       <span>{film.duration}</span>
                     </span>
+                  )}
+                  {film.trailer_url && (
+                    <span className="text-blue-400 text-[10px]">▶ Trailer</span>
                   )}
                 </div>
 
@@ -361,6 +368,19 @@ export function FilmManagement({ initialFilms }: FilmManagementProps) {
                   value={editingFilm.poster_url || ""}
                   onChange={(e) => setEditingFilm({ ...editingFilm, poster_url: e.target.value })}
                   placeholder="https://..."
+                  className="w-full h-9 px-3 rounded-lg bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:border-amber-400"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-slate-300 mb-1">
+                  Trailer URL (optional)
+                </label>
+                <input
+                  type="url"
+                  value={editingFilm.trailer_url || ""}
+                  onChange={(e) => setEditingFilm({ ...editingFilm, trailer_url: e.target.value })}
+                  placeholder="https://youtube.com/watch?v=..."
                   className="w-full h-9 px-3 rounded-lg bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:border-amber-400"
                 />
               </div>

@@ -11,6 +11,7 @@ export const INITIAL_FILMS: Film[] = [
       "Perjuangan seorang murid dalam menggapai mimpi di tengah keterbatasan dan ujian persahabatan sekolah.",
     poster_url:
       "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=800&q=80",
+    trailer_url: "https://www.youtube.com/watch?v=example1",
     crew: [
       {
         name: "Aditya Pratama",

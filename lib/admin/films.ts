@@ -39,6 +39,7 @@ export interface FilmInput {
   duration?: string | null;
   short_description: string;
   poster_url?: string | null;
+  trailer_url?: string | null;
   display_order?: number;
   crew: CrewMember[];
 }
@@ -68,6 +69,7 @@ export async function saveFilm(
       duration: input.duration ? input.duration.trim() : null,
       short_description: cleanDescription,
       poster_url: input.poster_url ? input.poster_url.trim() : null,
+      trailer_url: input.trailer_url ? input.trailer_url.trim() : null,
       display_order: Number(input.display_order) || 0,
       crew: Array.isArray(input.crew) ? input.crew : [],
       updated_at: new Date().toISOString(),
@@ -147,4 +149,3 @@ export async function deleteFilm(
     return { success: true, message: "Film berhasil dihapus (Mode Lokal)." };
   }
 }
-

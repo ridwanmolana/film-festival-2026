@@ -17,6 +17,7 @@ export interface Film {
   duration?: string | null;
   short_description: string;
   poster_url?: string | null;
+  trailer_url?: string | null;
   crew: CrewMember[];
   display_order: number;
   created_at: string;
@@ -31,6 +32,7 @@ export interface EventSettings {
   venue: string;
   description: string;
   tagline: string;
+  trailer_url?: string | null;
   is_published: boolean;
   published_at: string | null;
   voting_deadline: string;
@@ -77,4 +79,3 @@ export interface VotingStatus {
   is_manually_closed: boolean;
   total_votes: number;
 }
-

@@ -30,6 +30,7 @@ export interface Database {
           venue: string;
           description: string;
           tagline: string;
+          trailer_url: string | null;
           is_published: boolean;
           published_at: string | null;
           voting_deadline: string;
@@ -45,6 +46,7 @@ export interface Database {
           venue?: string;
           description?: string;
           tagline?: string;
+          trailer_url?: string | null;
           is_published?: boolean;
           published_at?: string | null;
           voting_deadline?: string;
@@ -60,6 +62,7 @@ export interface Database {
           venue?: string;
           description?: string;
           tagline?: string;
+          trailer_url?: string | null;
           is_published?: boolean;
           published_at?: string | null;
           voting_deadline?: string;
@@ -76,6 +79,7 @@ export interface Database {
           duration: string | null;
           short_description: string;
           poster_url: string | null;
+          trailer_url: string | null;
           crew: Json;
           display_order: number;
           created_at: string;
@@ -88,6 +92,7 @@ export interface Database {
           duration?: string | null;
           short_description: string;
           poster_url?: string | null;
+          trailer_url?: string | null;
           crew?: Json;
           display_order?: number;
           created_at?: string;
@@ -100,6 +105,7 @@ export interface Database {
           duration?: string | null;
           short_description?: string;
           poster_url?: string | null;
+          trailer_url?: string | null;
           crew?: Json;
           display_order?: number;
           created_at?: string;
