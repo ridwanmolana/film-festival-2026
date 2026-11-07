@@ -5,6 +5,7 @@ import { getEventSettingsAdmin } from "@/lib/admin/event";
 import { EVENT_CONSTANTS, ROUTES } from "@/lib/constants";
 import { HeroSection } from "@/components/hero-section";
 import { FilmShowcase } from "@/components/film-showcase";
+import { EventTrailerSection } from "@/components/event-trailer-section";
 import { PredictionVoting } from "@/components/prediction-voting";
 import { CommunityComments } from "@/components/community-comments";
 import { PublicNavbar } from "@/components/public-navbar";
@@ -35,6 +36,9 @@ export default async function HomePage() {
           <FilmShowcase films={films} />
         </div>
       </section>
+
+      {/* Official Festival Trailer Video Player (Underneath Nominee Films List) */}
+      <EventTrailerSection trailerUrl={eventSettings?.trailer_url} />
 
       {/* Audience Prediction Anchor Section (PRD Section 4C & 5: Audience Voting) */}
       <section id="prediction" className="py-24 border-t border-slate-800/80 px-4 sm:px-6 lg:px-8 relative overflow-hidden">

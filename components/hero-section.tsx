@@ -120,15 +120,16 @@ export function HeroSection({ films, trailerUrl }: HeroSectionProps) {
             </Button>
           </a>
           {activeTrailerUrl && (
-            <Button
-              variant="outline"
-              size="lg"
-              className="w-full sm:w-auto text-sm font-medium tracking-wide border-amber-500/40 text-amber-300 hover:bg-amber-500/10"
-              onClick={() => window.open(activeTrailerUrl, "_blank")}
-            >
-              <Play className="w-4 h-4 mr-2" />
-              Watch Trailer
-            </Button>
+            <a href="#trailer" className="w-full sm:w-auto">
+              <Button
+                variant="outline"
+                size="lg"
+                className="w-full sm:w-auto text-sm font-medium tracking-wide border-amber-500/40 text-amber-300 hover:bg-amber-500/10"
+              >
+                <Play className="w-4 h-4 mr-2" />
+                Watch Trailer
+              </Button>
+            </a>
           )}
         </motion.div>
 
