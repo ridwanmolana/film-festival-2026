@@ -49,39 +49,7 @@ export function FilmShowcase({ films }: FilmShowcaseProps) {
           Every film is nominated for the prestigious Best Picture award.
         </p>
 
-        {/* Genre Quick Filter Buttons (Client-side, all on single page) */}
-        <div className="pt-4 flex flex-wrap items-center justify-center gap-2">
-          <button
-            type="button"
-            onClick={() => setSelectedGenre("all")}
-            className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
-              selectedGenre === "all"
-                ? "bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 font-bold shadow-md shadow-amber-500/20"
-                : "bg-slate-900/90 text-slate-300 border border-slate-800 hover:border-amber-400/40 hover:text-white"
-            }`}
-          >
-            All Films ({films.length})
-          </button>
-          {genres.map((genre) => {
-            const count = films.filter(
-              (f) => f.genre && f.genre.toLowerCase().includes(genre.toLowerCase())
-            ).length;
-            return (
-              <button
-                key={genre}
-                type="button"
-                onClick={() => setSelectedGenre(genre)}
-                className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
-                  selectedGenre === genre
-                    ? "bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 font-bold shadow-md shadow-amber-500/20"
-                    : "bg-slate-900/90 text-slate-300 border border-slate-800 hover:border-amber-400/40 hover:text-white"
-                }`}
-              >
-                {genre} ({count})
-              </button>
-            );
-          })}
-        </div>
+       
       </div>
 
       {/* 10 Films Showcase Grid */}
