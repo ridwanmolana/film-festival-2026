@@ -17,19 +17,19 @@ function getEmbedUrl(url: string | null | undefined): string | null {
   // YouTube standard watch URL: https://www.youtube.com/watch?v=VIDEO_ID
   const ytWatchMatch = trimmed.match(/(?:youtube\.com\/watch\?v=)([a-zA-Z0-9_-]{11})/);
   if (ytWatchMatch) {
-    return `https://www.youtube-nocookie.com/embed/${ytWatchMatch[1]}?rel=0&modestbranding=1`;
+    return `https://www.youtube.com/embed/${ytWatchMatch[1]}?rel=0&modestbranding=1`;
   }
 
   // YouTube short URL: https://youtu.be/VIDEO_ID
   const ytShortMatch = trimmed.match(/(?:youtu\.be\/)([a-zA-Z0-9_-]{11})/);
   if (ytShortMatch) {
-    return `https://www.youtube-nocookie.com/embed/${ytShortMatch[1]}?rel=0&modestbranding=1`;
+    return `https://www.youtube.com/embed/${ytShortMatch[1]}?rel=0&modestbranding=1`;
   }
 
   // YouTube embed URL already: https://www.youtube.com/embed/VIDEO_ID
   const ytEmbedMatch = trimmed.match(/(?:youtube(?:-nocookie)?\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
   if (ytEmbedMatch) {
-    return `https://www.youtube-nocookie.com/embed/${ytEmbedMatch[1]}?rel=0&modestbranding=1`;
+    return `https://www.youtube.com/embed/${ytEmbedMatch[1]}?rel=0&modestbranding=1`;
   }
 
   // Vimeo URL: https://vimeo.com/VIDEO_ID
@@ -65,7 +65,7 @@ export function EventTrailerSection({ trailerUrl }: EventTrailerSectionProps) {
           </h2>
 
           <p className="max-w-2xl mx-auto text-xs sm:text-base text-slate-300 font-light leading-relaxed">
-           Watch the movie trailers of Film Festival 2026 and discover the creativity and imagination of our young filmmakers!
+            Watch the movie trailers of Film Festival 2026 and discover the creativity and imagination of our young filmmakers!
           </p>
         </div>
 
@@ -114,3 +114,4 @@ export function EventTrailerSection({ trailerUrl }: EventTrailerSectionProps) {
     </section>
   );
 }
+
