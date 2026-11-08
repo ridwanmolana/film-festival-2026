@@ -73,7 +73,6 @@ export function TurnstileWidget({ onVerify, onError, onExpire }: TurnstileWidget
   if (!isEnabled) {
     return (
       <div className="text-[11px] text-slate-500 italic py-1">
-       
       </div>
     );
   }

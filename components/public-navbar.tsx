@@ -48,17 +48,6 @@ export function PublicNavbar() {
             </a>
           ))}
         </nav>
-
-        {/* Desktop Admin Button */}
-        <div className="hidden md:flex items-center gap-3">
-          <Link href={ROUTES.ADMIN_LOGIN}>
-            <Button variant="outline" size="sm" className="text-xs">
-              <Shield className="w-3.5 h-3.5 mr-1" />
-              Admin
-            </Button>
-          </Link>
-        </div>
-
         {/* Mobile Hamburger Button */}
         <div className="flex md:hidden items-center gap-2">
           <button

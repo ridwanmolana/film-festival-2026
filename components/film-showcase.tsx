@@ -48,8 +48,6 @@ export function FilmShowcase({ films }: FilmShowcaseProps) {
           Showcasing original cinematic storytelling by students of SMP Global Prestasi Bekasi.
           Every film is nominated for the prestigious Best Picture award.
         </p>
-
-       
       </div>
 
       {/* 10 Films Showcase Grid */}

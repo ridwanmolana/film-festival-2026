@@ -137,12 +137,7 @@ export default async function HomePage() {
             <a href={ROUTES.EVENT_INFO} className="hover:text-amber-300 transition-colors">
               Event Info
             </a>
-            <Link
-              href={ROUTES.ADMIN_LOGIN}
-              className="text-amber-400/90 hover:text-amber-300 font-medium transition-colors"
-            >
-              Admin Portal
-            </Link>
+
           </div>
         </div>
       </footer>
