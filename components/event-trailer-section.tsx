@@ -57,15 +57,15 @@ export function EventTrailerSection({ trailerUrl }: EventTrailerSectionProps) {
         <div className="text-center space-y-3">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-300 text-xs font-semibold uppercase tracking-wider">
             <Play className="w-3.5 h-3.5 fill-amber-300" />
-            <span>Official Event Teaser & Trailer</span>
+            <span>Official Movie Trailer</span>
           </div>
 
           <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight uppercase">
-            Official Festival <span className="gold-gradient-text italic font-serif normal-case">Trailer</span>
+            Official Movie <span className="gold-gradient-text italic font-serif normal-case">Trailer</span>
           </h2>
 
           <p className="max-w-2xl mx-auto text-xs sm:text-base text-slate-300 font-light leading-relaxed">
-            Saksikan cuplikan visual resmi Film Festival Awards 2026. Merayakan kreativitas, visi sinematik, dan karya terbaik para sineas muda SMP Global Prestasi Bekasi.
+           Watch the movie trailers of Film Festival 2026 and discover the creativity and imagination of our young filmmakers!
           </p>
         </div>
 
