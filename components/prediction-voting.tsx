@@ -28,7 +28,7 @@ interface PredictionVotingProps {
 
 const BROWSER_TOKEN_STORAGE_KEY = "ffa_browser_token";
 
-const emptySubscribe = () => () => {};
+const emptySubscribe = () => () => { };
 
 function getBrowserTokenSnapshot(): string {
   if (typeof window === "undefined") return "";
@@ -147,8 +147,8 @@ export function PredictionVoting({
         </h2>
 
         <p className="max-w-2xl mx-auto text-sm sm:text-base text-slate-300 leading-relaxed font-light">
-          Choose your favorite film that you think deserves to win Best Picture at GPS Theater!
-          Voting is open to everyone. No account registration required.
+          Pilih satu film favorit Anda yang diprediksi meraih penghargaan film terbaik di GPS Theater.
+          Voting dibuka untuk umum tanpa registrasi akun.
         </p>
 
         {/* Voting Rules & Schedule Summary */}
@@ -159,7 +159,7 @@ export function PredictionVoting({
           </div>
           <div className="flex items-center gap-1.5 bg-slate-900/60 px-3 py-1.5 rounded-lg border border-slate-800">
             <Vote className="w-3.5 h-3.5 text-amber-400" />
-           
+            <span>1 Prediksi per Browser Token (Bisa Diperbarui)</span>
           </div>
         </div>
       </div>
@@ -170,14 +170,13 @@ export function PredictionVoting({
           <button
             type="button"
             onClick={() => setActiveTab("vote")}
-            className={`flex items-center gap-2 px-5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-              activeTab === "vote"
+            className={`flex items-center gap-2 px-5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${activeTab === "vote"
                 ? "bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 shadow-md shadow-amber-500/20"
                 : "text-slate-400 hover:text-white"
-            }`}
+              }`}
           >
             <Vote className="w-4 h-4" />
-            <span>Choose Film ({films.length})</span>
+            <span>Pilih Film ({films.length})</span>
           </button>
           <button
             type="button"
@@ -185,11 +184,10 @@ export function PredictionVoting({
               setActiveTab("standings");
               handleRefresh();
             }}
-            className={`flex items-center gap-2 px-5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-              activeTab === "standings"
+            className={`flex items-center gap-2 px-5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${activeTab === "standings"
                 ? "bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 shadow-md shadow-amber-500/20"
                 : "text-slate-400 hover:text-white"
-            }`}
+              }`}
           >
             <BarChart3 className="w-4 h-4" />
             <span>Live Standings & Hasil</span>
@@ -204,11 +202,10 @@ export function PredictionVoting({
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className={`p-4 rounded-xl border flex items-start gap-3 text-sm ${
-              message.type === "success"
+            className={`p-4 rounded-xl border flex items-start gap-3 text-sm ${message.type === "success"
                 ? "bg-emerald-950/70 border-emerald-500/40 text-emerald-200"
                 : "bg-rose-950/70 border-rose-500/40 text-rose-200"
-            }`}
+              }`}
           >
             {message.type === "success" ? (
               <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
@@ -258,11 +255,10 @@ export function PredictionVoting({
                 <div
                   key={film.id}
                   onClick={() => status.is_open && setSelectedFilmId(film.id)}
-                  className={`group relative p-3.5 sm:p-4 rounded-xl border flex items-center gap-3.5 transition-all cursor-pointer ${
-                    isSelected
+                  className={`group relative p-3.5 sm:p-4 rounded-xl border flex items-center gap-3.5 transition-all cursor-pointer ${isSelected
                       ? "bg-slate-900/95 border-amber-400 shadow-lg shadow-amber-500/15 ring-1 ring-amber-400"
                       : "bg-slate-950/70 border-slate-800 hover:border-amber-500/40 hover:bg-slate-900/60"
-                  } ${!status.is_open ? "opacity-75 cursor-not-allowed" : ""}`}
+                    } ${!status.is_open ? "opacity-75 cursor-not-allowed" : ""}`}
                 >
                   {/* Thumbnail Poster */}
                   <div className="relative w-14 h-20 rounded-lg overflow-hidden shrink-0 bg-slate-900 border border-slate-800">
@@ -303,11 +299,10 @@ export function PredictionVoting({
                   {/* Radio Visual Checkbox */}
                   <div className="shrink-0">
                     <div
-                      className={`w-5 h-5 rounded-full border flex items-center justify-center transition-colors ${
-                        isSelected
+                      className={`w-5 h-5 rounded-full border flex items-center justify-center transition-colors ${isSelected
                           ? "border-amber-400 bg-amber-400 text-slate-950"
                           : "border-slate-600 bg-slate-900"
-                      }`}
+                        }`}
                     >
                       {isSelected && <div className="w-2 h-2 rounded-full bg-slate-950" />}
                     </div>
@@ -395,25 +390,23 @@ export function PredictionVoting({
               return (
                 <div
                   key={item.film_id}
-                  className={`p-4 rounded-xl border transition-all ${
-                    isFirst
+                  className={`p-4 rounded-xl border transition-all ${isFirst
                       ? "bg-gradient-to-r from-amber-500/15 via-slate-900 to-slate-950 border-amber-400/50 shadow-md shadow-amber-500/10"
                       : "bg-slate-950/70 border-slate-800/80 hover:border-slate-700"
-                  }`}
+                    }`}
                 >
                   <div className="flex items-center justify-between gap-4 mb-2">
                     <div className="flex items-center gap-3 min-w-0">
                       {/* Ranking Badge */}
                       <div
-                        className={`w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs shrink-0 ${
-                          isFirst
+                        className={`w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs shrink-0 ${isFirst
                             ? "bg-amber-400 text-slate-950 shadow-md shadow-amber-400/30"
                             : isSecond
-                            ? "bg-slate-300 text-slate-950"
-                            : isThird
-                            ? "bg-amber-700 text-amber-100"
-                            : "bg-slate-800 text-slate-400"
-                        }`}
+                              ? "bg-slate-300 text-slate-950"
+                              : isThird
+                                ? "bg-amber-700 text-amber-100"
+                                : "bg-slate-800 text-slate-400"
+                          }`}
                       >
                         {isFirst ? <Trophy className="w-3.5 h-3.5" /> : idx + 1}
                       </div>
@@ -447,11 +440,10 @@ export function PredictionVoting({
                   {/* Percentage Progress Bar */}
                   <div className="w-full h-2 rounded-full bg-slate-900 overflow-hidden border border-slate-800">
                     <div
-                      className={`h-full rounded-full transition-all duration-700 ${
-                        isFirst
+                      className={`h-full rounded-full transition-all duration-700 ${isFirst
                           ? "bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 shadow-sm shadow-amber-400/50"
                           : "bg-amber-500/60"
-                      }`}
+                        }`}
                       style={{ width: `${Math.max(item.percentage, 2)}%` }}
                     />
                   </div>
@@ -460,9 +452,7 @@ export function PredictionVoting({
             })}
           </div>
 
-          <div className="text-[11px] text-slate-500 text-center italic">
-            • Hasil ditampilkan secara agregat. Identitas dan browser token pemilih tidak pernah dipublikasikan.
-          </div>
+
         </div>
       )}
     </div>
