@@ -147,8 +147,8 @@ export function PredictionVoting({
         </h2>
 
         <p className="max-w-2xl mx-auto text-sm sm:text-base text-slate-300 leading-relaxed font-light">
-          Pilih satu film favorit Anda yang diprediksi meraih penghargaan film terbaik di GPS Theater.
-          Voting dibuka untuk umum tanpa registrasi akun.
+          Choose your favorite film that you think deserves to win Best Picture at GPS Theater!
+          Voting is open to everyone. No account registration required.
         </p>
 
         {/* Voting Rules & Schedule Summary */}
@@ -159,7 +159,7 @@ export function PredictionVoting({
           </div>
           <div className="flex items-center gap-1.5 bg-slate-900/60 px-3 py-1.5 rounded-lg border border-slate-800">
             <Vote className="w-3.5 h-3.5 text-amber-400" />
-            <span>1 Prediksi per Browser Token (Bisa Diperbarui)</span>
+           
           </div>
         </div>
       </div>
@@ -177,7 +177,7 @@ export function PredictionVoting({
             }`}
           >
             <Vote className="w-4 h-4" />
-            <span>Pilih Film ({films.length})</span>
+            <span>Choose Film ({films.length})</span>
           </button>
           <button
             type="button"
