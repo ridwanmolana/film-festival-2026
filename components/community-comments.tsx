@@ -78,8 +78,7 @@ export function CommunityComments({ initialComments }: CommunityCommentsProps) {
           Filmmaker Wishes & Messages
         </h2>
         <p className="text-sm sm:text-base text-slate-300 leading-relaxed font-light">
-          Berikan apresiasi dan kata-kata semangat untuk seluruh murid, sutradara, dan kru produksi
-          yang telah berkarya di Film Festival Awards 2026.
+         A heartfelt message of appreciation and encouragement to all students, directors, and production crew members who have contributed their creativity, passion, and hard work to the Film Festival Awards 2026. Your dedication and teamwork have made this cinematic journey truly special. Keep creating, keep inspiring, and never stop telling your stories!
         </p>
       </div>
 
