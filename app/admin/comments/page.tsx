@@ -9,9 +9,18 @@ import { unstable_noStore } from "next/cache";
 export const dynamic = "force-dynamic";
 export const fetchCache = "force-no-store";
 
-export default async function AdminCommentsPage() {
+export default async function AdminCommentsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string; filter?: string }>;
+}) {
   unstable_noStore();
-  const comments = await getAllCommentsAdmin("all");
+
+  const params = await searchParams;
+  const page = Math.max(1, parseInt(params.page ?? "1", 10) || 1);
+  const filter = (params.filter ?? "all") as "all" | "pending" | "approved" | "hidden";
+
+  const { comments, total } = await getAllCommentsAdmin(filter, page);
 
   return (
     <div className="space-y-6">
@@ -27,7 +36,12 @@ export default async function AdminCommentsPage() {
 
       <Card className="cinematic-card">
         <CardContent className="p-6">
-          <CommentModeration initialComments={comments} />
+          <CommentModeration
+            initialComments={comments}
+            total={total}
+            currentPage={page}
+            currentFilter={filter}
+          />
         </CardContent>
       </Card>
     </div>

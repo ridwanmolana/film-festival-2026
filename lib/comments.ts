@@ -5,8 +5,14 @@ import type { Comment, CommentStatus } from "@/types";
 import { revalidatePath } from "next/cache";
 
 export const COMMENTS_PAGE_SIZE = 10;
+export const ADMIN_COMMENTS_PAGE_SIZE = 50;
 
 export interface ApprovedCommentsResult {
+  comments: Comment[];
+  total: number;
+}
+
+export interface AdminCommentsResult {
   comments: Comment[];
   total: number;
 }
@@ -145,33 +151,43 @@ export async function submitComment(
 }
 
 /**
- * Admin: Get all comments with optional status filtering
+ * Admin: Get all comments with optional status filtering, paginated.
+ * Returns comments + total count so admin UI can paginate.
  */
 export async function getAllCommentsAdmin(
-  filterStatus?: "all" | CommentStatus
-): Promise<Comment[]> {
+  filterStatus: "all" | CommentStatus = "all",
+  page = 1,
+  limit = ADMIN_COMMENTS_PAGE_SIZE
+): Promise<AdminCommentsResult> {
+  const safePage = Math.max(1, Math.floor(page));
+  const safeLimit = Math.max(1, Math.min(100, Math.floor(limit)));
+  const offset = (safePage - 1) * safeLimit;
+
   try {
     const adminSupabase = createAdminClient();
     let query = adminSupabase
       .from("comments")
-      .select("*")
-      .order("created_at", { ascending: false });
+      .select("*", { count: "exact" })
+      .order("created_at", { ascending: false })
+      .range(offset, offset + safeLimit - 1);
 
     if (filterStatus && filterStatus !== "all") {
       query = query.eq("status", filterStatus);
     }
 
-    const { data, error } = await query;
+    const { data, error, count } = await query;
     const comments = data as unknown as Comment[] | null;
 
     if (!error && comments) {
-      return comments;
+      return { comments, total: count ?? 0 };
     }
-  } catch {
-    // DB unreachable
+
+    console.error("[getAllCommentsAdmin] Supabase error:", error);
+  } catch (e) {
+    console.error("[getAllCommentsAdmin] Exception:", e);
   }
 
-  return [];
+  return { comments: [], total: 0 };
 }
 
 /**

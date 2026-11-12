@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import type { Comment, CommentStatus } from "@/types";
-import { updateCommentStatus, deleteComment } from "@/lib/comments";
+import { updateCommentStatus, deleteComment, ADMIN_COMMENTS_PAGE_SIZE } from "@/lib/comments";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -14,27 +15,51 @@ import {
   CheckCircle2,
   AlertCircle,
   User,
+  RefreshCw,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
 interface CommentModerationProps {
   initialComments: Comment[];
+  total: number;
+  currentPage: number;
+  currentFilter: "all" | CommentStatus;
 }
 
-export function CommentModeration({ initialComments }: CommentModerationProps) {
+export function CommentModeration({
+  initialComments,
+  total,
+  currentPage,
+  currentFilter,
+}: CommentModerationProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
   const [comments, setComments] = useState<Comment[]>(initialComments);
-  const [activeFilter, setActiveFilter] = useState<"all" | CommentStatus>("all");
   const [actionMessage, setActionMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [isPending, startTransition] = useTransition();
 
-  const filtered = comments.filter((c) => {
-    if (activeFilter === "all") return true;
-    return c.status === activeFilter;
-  });
+  const totalPages = Math.max(1, Math.ceil(total / ADMIN_COMMENTS_PAGE_SIZE));
 
-  const pendingCount = comments.filter((c) => c.status === "pending").length;
-  const approvedCount = comments.filter((c) => c.status === "approved").length;
-  const hiddenCount = comments.filter((c) => c.status === "hidden").length;
+  // ─── Navigation helpers ────────────────────────────────────────────
+  function navigate(newPage: number, newFilter?: "all" | CommentStatus) {
+    const sp = new URLSearchParams(searchParams.toString());
+    sp.set("page", String(newPage));
+    sp.set("filter", newFilter ?? currentFilter);
+    router.push(`${pathname}?${sp.toString()}`);
+  }
 
+  function setFilter(filter: "all" | CommentStatus) {
+    navigate(1, filter);
+  }
+
+  function refresh() {
+    router.refresh();
+  }
+
+  // ─── Actions ──────────────────────────────────────────────────────
   const handleStatusChange = (commentId: string, newStatus: CommentStatus) => {
     setActionMessage(null);
     startTransition(async () => {
@@ -81,73 +106,67 @@ export function CommentModeration({ initialComments }: CommentModerationProps) {
     }
   };
 
+  // Filter tabs config
+  const tabs: { key: "all" | CommentStatus; label: string }[] = [
+    { key: "all", label: "Semua" },
+    { key: "pending", label: "Pending" },
+    { key: "approved", label: "Approved" },
+    { key: "hidden", label: "Hidden" },
+  ];
+
   return (
     <div className="space-y-6">
-      {/* Header and Filter Tabs */}
+      {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
         <div>
           <h2 className="text-xl font-bold text-white flex items-center gap-2">
             <span>Comment Moderation</span>
-            {pendingCount > 0 && (
-              <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-amber-400 text-slate-950 animate-pulse">
-                {pendingCount} Pending
-              </span>
-            )}
+            <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-slate-700 text-slate-200">
+              {total} total
+            </span>
           </h2>
           <p className="text-xs text-slate-400 mt-0.5">
-            Approve, hide, or delete community comments submitted by visitors.
+            Approve, hide, atau hapus komentar dari pengunjung.
           </p>
         </div>
 
-        {/* Filter Pills */}
-        <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-950 border border-slate-800 text-xs">
+        {/* Filter Tabs + Refresh */}
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-950 border border-slate-800 text-xs">
+            {tabs.map((tab) => (
+              <button
+                key={tab.key}
+                type="button"
+                onClick={() => setFilter(tab.key)}
+                className={`px-3 py-1.5 rounded-lg font-medium transition-colors cursor-pointer ${
+                  currentFilter === tab.key
+                    ? tab.key === "approved"
+                      ? "bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30"
+                      : tab.key === "hidden"
+                      ? "bg-slate-700/50 text-slate-200 font-bold border border-slate-600"
+                      : "bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30"
+                    : "text-slate-400 hover:text-white"
+                }`}
+              >
+                {tab.label}
+                {tab.key === "all" && ` (${total})`}
+              </button>
+            ))}
+          </div>
+
           <button
             type="button"
-            onClick={() => setActiveFilter("all")}
-            className={`px-3 py-1.5 rounded-lg font-medium transition-colors cursor-pointer ${
-              activeFilter === "all"
-                ? "bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30"
-                : "text-slate-400 hover:text-white"
-            }`}
+            onClick={refresh}
+            disabled={isPending}
+            title="Refresh data"
+            className="p-2 rounded-lg border border-slate-700 text-slate-400 hover:text-amber-300 hover:border-amber-500/40 transition-colors disabled:opacity-50"
           >
-            All ({comments.length})
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveFilter("pending")}
-            className={`px-3 py-1.5 rounded-lg font-medium transition-colors cursor-pointer ${
-              activeFilter === "pending"
-                ? "bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30"
-                : "text-slate-400 hover:text-white"
-            }`}
-          >
-            Pending ({pendingCount})
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveFilter("approved")}
-            className={`px-3 py-1.5 rounded-lg font-medium transition-colors cursor-pointer ${
-              activeFilter === "approved"
-                ? "bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30"
-                : "text-slate-400 hover:text-white"
-            }`}
-          >
-            Approved ({approvedCount})
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveFilter("hidden")}
-            className={`px-3 py-1.5 rounded-lg font-medium transition-colors cursor-pointer ${
-              activeFilter === "hidden"
-                ? "bg-slate-700/50 text-slate-200 font-bold border border-slate-600"
-                : "text-slate-400 hover:text-white"
-            }`}
-          >
-            Hidden ({hiddenCount})
+            <RefreshCw className={`w-3.5 h-3.5 ${isPending ? "animate-spin" : ""}`} />
           </button>
         </div>
       </div>
 
+      {/* Action feedback */}
       {actionMessage && (
         <div
           className={`p-3.5 rounded-xl border text-xs flex items-center gap-2 ${
@@ -165,15 +184,69 @@ export function CommentModeration({ initialComments }: CommentModerationProps) {
         </div>
       )}
 
-      {/* Comments Moderation List */}
+      {/* Pagination info */}
+      {total > 0 && (
+        <div className="flex items-center justify-between text-xs text-slate-500">
+          <span>
+            Halaman {currentPage} dari {totalPages} &nbsp;·&nbsp; {total} komentar
+          </span>
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              disabled={currentPage <= 1 || isPending}
+              onClick={() => navigate(currentPage - 1)}
+              className="p-1.5 rounded-lg border border-slate-700 text-slate-400 hover:text-white hover:border-slate-500 disabled:opacity-30 transition-colors"
+            >
+              <ChevronLeft className="w-3.5 h-3.5" />
+            </button>
+            {/* Page numbers */}
+            {Array.from({ length: totalPages }, (_, i) => i + 1)
+              .filter((p) => p === 1 || p === totalPages || Math.abs(p - currentPage) <= 2)
+              .reduce<(number | "...")[]>((acc, p, idx, arr) => {
+                if (idx > 0 && p - (arr[idx - 1] as number) > 1) acc.push("...");
+                acc.push(p);
+                return acc;
+              }, [])
+              .map((p, idx) =>
+                p === "..." ? (
+                  <span key={`ellipsis-${idx}`} className="px-1 text-slate-600">…</span>
+                ) : (
+                  <button
+                    key={p}
+                    type="button"
+                    onClick={() => navigate(p as number)}
+                    disabled={isPending}
+                    className={`w-7 h-7 rounded-lg text-xs font-medium transition-colors ${
+                      p === currentPage
+                        ? "bg-amber-500/20 text-amber-300 border border-amber-500/30"
+                        : "text-slate-400 hover:text-white hover:bg-slate-800"
+                    }`}
+                  >
+                    {p}
+                  </button>
+                )
+              )}
+            <button
+              type="button"
+              disabled={currentPage >= totalPages || isPending}
+              onClick={() => navigate(currentPage + 1)}
+              className="p-1.5 rounded-lg border border-slate-700 text-slate-400 hover:text-white hover:border-slate-500 disabled:opacity-30 transition-colors"
+            >
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Comments List */}
       <div className="space-y-3">
-        {filtered.length === 0 ? (
+        {comments.length === 0 ? (
           <div className="text-center py-12 bg-slate-950/40 rounded-xl border border-slate-800 text-slate-400 text-xs">
             <Filter className="w-6 h-6 text-slate-600 mx-auto mb-2" />
             <p>Tidak ada komentar dalam kategori ini.</p>
           </div>
         ) : (
-          filtered.map((item) => (
+          comments.map((item) => (
             <div
               key={item.id}
               className={`p-4 rounded-xl border transition-all ${
@@ -223,7 +296,7 @@ export function CommentModeration({ initialComments }: CommentModerationProps) {
                 &ldquo;{item.content}&rdquo;
               </p>
 
-              {/* Actions Toolbar (PRD Section 4D, 7, 8) */}
+              {/* Actions */}
               <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-800/80">
                 {item.status !== "approved" && (
                   <Button
@@ -269,7 +342,31 @@ export function CommentModeration({ initialComments }: CommentModerationProps) {
           ))
         )}
       </div>
+
+      {/* Bottom pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-1 pt-2 border-t border-slate-800">
+          <button
+            type="button"
+            disabled={currentPage <= 1 || isPending}
+            onClick={() => navigate(currentPage - 1)}
+            className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs border border-slate-700 text-slate-400 hover:text-white hover:border-slate-500 disabled:opacity-30 transition-colors"
+          >
+            <ChevronLeft className="w-3.5 h-3.5" /> Prev
+          </button>
+          <span className="text-xs text-slate-500 px-3">
+            {currentPage} / {totalPages}
+          </span>
+          <button
+            type="button"
+            disabled={currentPage >= totalPages || isPending}
+            onClick={() => navigate(currentPage + 1)}
+            className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs border border-slate-700 text-slate-400 hover:text-white hover:border-slate-500 disabled:opacity-30 transition-colors"
+          >
+            Next <ChevronRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }
-
