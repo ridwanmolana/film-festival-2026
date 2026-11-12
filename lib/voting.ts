@@ -10,6 +10,15 @@ import crypto from "crypto";
 
 const VOTING_DEADLINE_MS = new Date(EVENT_CONSTANTS.VOTING_DEADLINE_ISO).getTime();
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+// CAPTCHA is mandatory in production. Accept literal "your-..." placeholders so
+// local dev keeps working, but a real-looking key must verify.
+function isTurnstileEnforced(): boolean {
+  const secret = process.env.TURNSTILE_SECRET_KEY;
+  return Boolean(secret) && !secret!.startsWith("your-");
+}
+
 /**
  * Server-side check if voting is currently open according to server clock and database settings
  */
@@ -160,11 +169,21 @@ export async function submitPrediction(
   if (!browserToken || typeof browserToken !== "string" || browserToken.trim() === "") {
     return { success: false, message: "Browser token tidak ditemukan." };
   }
+  // ponytail: tokens are client-supplied UUIDs. Stronger anti-fraud = IP-based
+  // rate limiting + server-issued signed token; add only if ballot stuffing is seen.
+  if (!UUID_RE.test(browserToken.trim())) {
+    return { success: false, message: "Browser token tidak valid." };
+  }
 
   const cleanFilmId = filmId.trim();
   const cleanToken = browserToken.trim();
 
-  // 2. Server-side schedule check
+  // 2. DB-shaped validation of the film id
+  if (!UUID_RE.test(cleanFilmId)) {
+    return { success: false, message: "Pilihan film tidak valid." };
+  }
+
+  // 3. Server-side schedule check
   const status = await getVotingStatus();
   if (!status.is_open) {
     return {
@@ -173,9 +192,9 @@ export async function submitPrediction(
     };
   }
 
-  // 3. CAPTCHA verification (Cloudflare Turnstile) if secret key is present
-  const turnstileSecret = process.env.TURNSTILE_SECRET_KEY;
-  if (turnstileSecret && turnstileSecret !== "your-turnstile-secret-key") {
+  // 4. CAPTCHA verification (Cloudflare Turnstile) - required in production
+  const isProduction = process.env.NODE_ENV === "production";
+  if (isTurnstileEnforced() || isProduction) {
     if (!captchaToken) {
       return { success: false, message: "Verifikasi CAPTCHA diperlukan sebelum mengirim prediksi." };
     }
@@ -185,7 +204,7 @@ export async function submitPrediction(
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({
-          secret: turnstileSecret,
+          secret: process.env.TURNSTILE_SECRET_KEY ?? "",
           response: captchaToken,
         }),
       });
@@ -211,16 +230,30 @@ export async function submitPrediction(
     // Header reading fallback
   }
 
-  // 5. Database UPSERT (One active prediction per anonymous browser token)
+  // 5. Validate film exists and Database UPSERT (One active prediction per token)
   try {
     const adminSupabase = createAdminClient();
 
+    const { data: filmRow, error: filmError } = await adminSupabase
+      .from("films")
+      .select("id")
+      .eq("id", cleanFilmId)
+      .maybeSingle();
+
+    if (filmError || !filmRow) {
+      return { success: false, message: "Film yang dipilih tidak ditemukan." };
+    }
+
     // Check if token already has an existing vote (to indicate whether this is an update)
-    const { data: existingData } = await adminSupabase
+    const { data: existingData, error: existingError } = await adminSupabase
       .from("predictions")
       .select("id, film_id")
       .eq("browser_token", cleanToken)
       .maybeSingle();
+
+    if (existingError) {
+      return { success: false, message: "Gagal memeriksa prediksi Anda. Silakan coba lagi." };
+    }
 
     const isUpdate = Boolean(existingData);
 
@@ -251,13 +284,9 @@ export async function submitPrediction(
       filmId: cleanFilmId,
       isUpdate,
     };
-  } catch {
-    // If in local development without live database connection, simulate successful vote
-    return {
-      success: true,
-      message: "Prediksi Best Picture Anda berhasil dicatat (Mode Pengujian Lokal).",
-      filmId: cleanFilmId,
-      isUpdate: false,
-    };
+  } catch (err) {
+    // Never report a vote as saved when it was not persisted.
+    console.error("submitPrediction failed:", err);
+    return { success: false, message: "Terjadi kesalahan saat menyimpan prediksi. Silakan coba lagi." };
   }
 }

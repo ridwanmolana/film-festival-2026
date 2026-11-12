@@ -2,7 +2,7 @@
 
 import { useState, useTransition, useRef } from "react";
 import type { Comment } from "@/types";
-import { submitComment, getApprovedComments } from "@/lib/comments";
+import { submitComment, getApprovedComments, COMMENTS_PAGE_SIZE } from "@/lib/comments";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MessageSquare, Send, CheckCircle2, AlertCircle, Clock, ShieldCheck, Heart } from "lucide-react";
@@ -10,10 +10,13 @@ import { motion, AnimatePresence } from "motion/react";
 
 interface CommunityCommentsProps {
   initialComments: Comment[];
+  initialTotal: number;
 }
 
-export function CommunityComments({ initialComments }: CommunityCommentsProps) {
+export function CommunityComments({ initialComments, initialTotal }: CommunityCommentsProps) {
   const [comments, setComments] = useState<Comment[]>(initialComments);
+  const [total, setTotal] = useState(initialTotal);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [authorName, setAuthorName] = useState("");
   const [content, setContent] = useState("");
   const [honeypot, setHoneypot] = useState("");
@@ -45,13 +48,25 @@ export function CommunityComments({ initialComments }: CommunityCommentsProps) {
         setAuthorName("");
         setContent("");
         formStartTimeRef.current = null;
-        // Re-read approved comments
-        const fresh = await getApprovedComments();
-        setComments(fresh);
+        // Reload first page so the new comment appears instantly
+        const fresh = await getApprovedComments(0, Math.max(comments.length, COMMENTS_PAGE_SIZE));
+        setComments(fresh.comments);
+        setTotal(fresh.total);
       } else {
         setMessage({ type: "error", text: result.message });
       }
     });
+  };
+
+  const handleLoadMore = async () => {
+    setLoadingMore(true);
+    try {
+      const next = await getApprovedComments(comments.length, COMMENTS_PAGE_SIZE);
+      setComments((prev) => [...prev, ...next.comments.filter((c) => !prev.some((p) => p.id === c.id))]);
+      setTotal(next.total);
+    } finally {
+      setLoadingMore(false);
+    }
   };
 
   const formatDate = (dateStr: string) => {
@@ -177,8 +192,8 @@ export function CommunityComments({ initialComments }: CommunityCommentsProps) {
             <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800/80 flex items-start gap-2.5 text-[11px] text-slate-400">
               <ShieldCheck className="w-4 h-4 text-amber-400/80 shrink-0 mt-0.5" />
               <span>
-                Moderasi Aktif: Pesan baru tersimpan sebagai <strong>Pending</strong> dan akan
-                ditampilkan ke publik setelah disetujui administrator.
+                Pesan Anda langsung tampil di kolom komentar. Administrator dapat
+                menyembunyikan pesan yang tidak sesuai.
               </span>
             </div>
 
@@ -200,20 +215,22 @@ export function CommunityComments({ initialComments }: CommunityCommentsProps) {
           </form>
         </div>
 
-        {/* Approved Comments Wall (PRD Section 4D: Display approved comments) */}
+        {/* Comments Wall (PRD Section 4D: instant comments, 10 per page) */}
         <div className="lg:col-span-7 space-y-4">
           <div className="flex items-center justify-between pb-2 border-b border-slate-800/80">
             <span className="text-xs uppercase tracking-wider text-amber-300 font-semibold flex items-center gap-2">
               <Heart className="w-4 h-4 text-amber-400 fill-amber-400/20" />
-              <span>Pesan Komunitas ({comments.length})</span>
+              <span>Pesan Komunitas ({total})</span>
             </span>
-            <span className="text-[11px] text-slate-400">Hanya menampilkan komentar yang disetujui</span>
+            <span className="text-[11px] text-slate-400">
+              Menampilkan {comments.length} dari {total}
+            </span>
           </div>
 
           {comments.length === 0 ? (
             <div className="p-8 rounded-2xl bg-slate-950/50 border border-slate-800 text-center text-slate-400 space-y-2">
               <MessageSquare className="w-8 h-8 text-amber-400/50 mx-auto" />
-              <p className="text-sm font-medium text-slate-300">Belum ada pesan yang disetujui</p>
+              <p className="text-sm font-medium text-slate-300">Belum ada pesan</p>
               <p className="text-xs">
                 Jadilah orang pertama yang mengirimkan ucapan hangat untuk para pembuat film!
               </p>
@@ -243,6 +260,19 @@ export function CommunityComments({ initialComments }: CommunityCommentsProps) {
                   </p>
                 </div>
               ))}
+
+              {comments.length < total && (
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  disabled={loadingMore}
+                  onClick={handleLoadMore}
+                  className="w-full text-xs h-9"
+                >
+                  {loadingMore ? "Memuat..." : `Muat ${Math.min(COMMENTS_PAGE_SIZE, total - comments.length)} pesan lainnya`}
+                </Button>
+              )}
             </div>
           )}
         </div>

@@ -3,8 +3,14 @@ import { CommentModeration } from "@/components/admin/comment-moderation";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { unstable_noStore } from "next/cache";
+
+// Always read fresh comments; never serve a cached moderation list.
+export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
 
 export default async function AdminCommentsPage() {
+  unstable_noStore();
   const comments = await getAllCommentsAdmin("all");
 
   return (

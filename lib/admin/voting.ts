@@ -55,6 +55,32 @@ export async function toggleManualVotingClosure(
 }
 
 /**
+ * Admin: Clear ALL voting data (destructive, irreversible)
+ */
+export async function clearAllVotes(): Promise<{ success: boolean; message: string }> {
+  try {
+    const adminSupabase = createAdminClient();
+    // PostgREST rejects unfiltered DELETE; filter on non-null id matches all rows.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { error } = await (adminSupabase.from("predictions") as any)
+      .delete()
+      .not("id", "is", null);
+
+    if (error) {
+      return { success: false, message: `Gagal membersihkan data voting: ${error.message}` };
+    }
+
+    revalidatePath("/");
+    revalidatePath("/admin");
+    revalidatePath("/admin/voting");
+
+    return { success: true, message: "Seluruh data voting berhasil dibersihkan." };
+  } catch {
+    return { success: false, message: "Gagal membersihkan data voting (Supabase offline)." };
+  }
+}
+
+/**
  * Admin: Generate CSV export string of voting data (PRD Section 8: Export voting data)
  */
 export async function getVotingCSVData(): Promise<string> {

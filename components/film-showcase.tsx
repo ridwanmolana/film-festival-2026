@@ -48,6 +48,37 @@ export function FilmShowcase({ films }: FilmShowcaseProps) {
           Showcasing original cinematic storytelling by students of SMP Global Prestasi Bekasi.
           Every film is nominated for the prestigious Best Picture award.
         </p>
+
+        {/* Genre filter chips */}
+        {genres.length > 0 && (
+          <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
+            <button
+              type="button"
+              onClick={() => setSelectedGenre("all")}
+              className={`px-3 py-1 rounded-full text-xs font-medium transition-colors border ${
+                selectedGenre === "all"
+                  ? "bg-amber-500 text-slate-950 border-amber-500"
+                  : "bg-slate-900/60 text-slate-300 border-slate-700 hover:border-amber-500/40"
+              }`}
+            >
+              All
+            </button>
+            {genres.map((genre) => (
+              <button
+                key={genre}
+                type="button"
+                onClick={() => setSelectedGenre(genre)}
+                className={`px-3 py-1 rounded-full text-xs font-medium transition-colors border ${
+                  selectedGenre === genre
+                    ? "bg-amber-500 text-slate-950 border-amber-500"
+                    : "bg-slate-900/60 text-slate-300 border-slate-700 hover:border-amber-500/40"
+                }`}
+              >
+                {genre}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* 10 Films Showcase Grid */}

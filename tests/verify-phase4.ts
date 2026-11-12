@@ -31,7 +31,7 @@ runTest("lib/comments.ts exports public and admin moderation functions", () => {
     "getAllCommentsAdmin",
     "updateCommentStatus",
     "deleteComment",
-    'status: "pending"',
+    'status: "approved"',
     "honeypot",
     "formStartTime",
   ];
@@ -43,16 +43,16 @@ runTest("lib/comments.ts exports public and admin moderation functions", () => {
   }
 });
 
-// Test 2: Database RLS policies enforce pending on insert and approved on select
-runTest("Database schema enforces public approved-only select and pending-only insert", () => {
+// Test 2: Comments are public unless hidden; admins can still moderate
+runTest("Database schema publishes non-hidden comments and keeps admin moderation", () => {
   const rlsPath = path.join(rootDir, "supabase", "migrations", "20261105000002_rls_policies.sql");
   const sql = fs.readFileSync(rlsPath, "utf-8");
 
-  if (!sql.includes("status = 'approved'")) {
-    throw new Error("Missing RLS condition: status = 'approved' for public read");
+  if (!sql.includes("status <> 'hidden'")) {
+    throw new Error("Missing RLS condition: status <> 'hidden' for public read");
   }
-  if (!sql.includes("status = 'pending'")) {
-    throw new Error("Missing RLS condition: status = 'pending' for public insert");
+  if (!sql.includes("WITH CHECK (status = 'approved')")) {
+    throw new Error("Missing RLS condition: status = 'approved' for public insert");
   }
   if (!sql.includes("Admin update comments")) {
     throw new Error("Missing RLS policy: Admin update comments");

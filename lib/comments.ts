@@ -1,54 +1,48 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { Comment, CommentStatus } from "@/types";
 import { revalidatePath } from "next/cache";
 
-// Initial seed fallback comments if database is offline or not yet connected in dev
-const INITIAL_APPROVED_COMMENTS: Comment[] = [
-  {
-    id: "22222222-2222-2222-2222-222222222201",
-    author_name: "Ibu Dewi (Guru Seni Budaya)",
-    content:
-      "Karya anak-anak SMP Global Prestasi tahun ini luar biasa membanggakan! Selamat untuk semua tim produksi film!",
-    status: "approved",
-    created_at: "2026-11-02T10:00:00Z",
-    updated_at: "2026-11-02T10:00:00Z",
-  },
-  {
-    id: "22222222-2222-2222-2222-222222222202",
-    author_name: "Rian (Alumni 2024)",
-    content:
-      "Sinematografi film Langkah Harapan keren banget. Sukses besar untuk Film Festival Awards 2026 di GPS Theater!",
-    status: "approved",
-    created_at: "2026-11-03T14:30:00Z",
-    updated_at: "2026-11-03T14:30:00Z",
-  },
-];
+export const COMMENTS_PAGE_SIZE = 10;
+
+export interface ApprovedCommentsResult {
+  comments: Comment[];
+  total: number;
+}
 
 /**
- * Public: Get approved comments only (PRD Section 4D & 7)
+ * Public: Get visible comments, paginated (PRD Section 4D & 7)
+ * Instant publication: only 'hidden' is excluded, so new comments show immediately.
+ * Uses the service-role client so unmoderated comments bypass the public
+ * "approved only" RLS policy while stays hidden.
  */
-export async function getApprovedComments(): Promise<Comment[]> {
+export async function getApprovedComments(
+  offset = 0,
+  limit = COMMENTS_PAGE_SIZE
+): Promise<ApprovedCommentsResult> {
+  const safeOffset = Math.max(0, Math.floor(offset));
+  const safeLimit = Math.max(1, Math.floor(limit));
+
   try {
-    const supabase = await createClient();
-    const { data, error } = await supabase
+    const adminSupabase = createAdminClient();
+    const { data, error, count } = await adminSupabase
       .from("comments")
-      .select("*")
-      .eq("status", "approved")
-      .order("created_at", { ascending: false });
+      .select("*", { count: "exact" })
+      .neq("status", "hidden")
+      .order("created_at", { ascending: false })
+      .range(safeOffset, safeOffset + safeLimit - 1);
 
     const comments = data as unknown as Comment[] | null;
 
-    if (!error && comments && comments.length > 0) {
-      return comments;
+    if (!error && comments) {
+      return { comments, total: count ?? comments.length };
     }
   } catch {
-    // Offline / dev fallback
+    // DB unreachable: show empty wall rather than fake data
   }
 
-  return INITIAL_APPROVED_COMMENTS;
+  return { comments: [], total: 0 };
 }
 
 export interface SubmitCommentResult {
@@ -58,7 +52,7 @@ export interface SubmitCommentResult {
 
 /**
  * Public: Submit a comment with basic spam protection (PRD Section 7)
- * Stored with status 'pending' awaiting administrator moderation.
+ * Published instantly as 'approved'; admins can hide it later.
  */
 export async function submitComment(
   authorName: string,
@@ -117,14 +111,14 @@ export async function submitComment(
     };
   }
 
-  // 4. Insert into database as 'pending'
+  // 4. Insert into database, published immediately (explicit status so DB default cannot queue it)
   try {
     const adminSupabase = createAdminClient();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { error } = await (adminSupabase.from("comments") as any).insert({
       author_name: cleanName,
       content: cleanContent,
-      status: "pending",
+      status: "approved",
     });
 
     if (error) {
@@ -140,14 +134,12 @@ export async function submitComment(
     return {
       success: true,
       message:
-        "Pesan Anda berhasil dikirim! Komentar akan ditampilkan setelah disetujui oleh administrator.",
+        "Pesan Anda berhasil dikirim dan langsung tampil di kolom komentar!",
     };
   } catch {
-    // Local development fallback
     return {
-      success: true,
-      message:
-        "Pesan Anda berhasil diterima (Mode Pengujian Lokal). Komentar menunggu persetujuan moderator.",
+      success: false,
+      message: "Gagal terhubung ke database komentar. Coba lagi sebentar.",
     };
   }
 }
@@ -176,21 +168,10 @@ export async function getAllCommentsAdmin(
       return comments;
     }
   } catch {
-    // Return sample comments
+    // DB unreachable
   }
 
-  return [
-    ...INITIAL_APPROVED_COMMENTS,
-    {
-      id: "22222222-2222-2222-2222-222222222203",
-      author_name: "Pengunjung GPS Theater",
-      content:
-        "Menunggu penayangan tanggal 8-9 Desember nanti! Apakah ada tiket on the spot?",
-      status: "pending",
-      created_at: "2026-11-04T09:15:00Z",
-      updated_at: "2026-11-04T09:15:00Z",
-    },
-  ];
+  return [];
 }
 
 /**
@@ -231,8 +212,8 @@ export async function updateCommentStatus(
     };
   } catch {
     return {
-      success: true,
-      message: `Status komentar diubah menjadi ${newStatus} (Mode Lokal).`,
+      success: false,
+      message: "Gagal terhubung ke database. Status komentar tidak berubah.",
     };
   }
 }
@@ -264,6 +245,6 @@ export async function deleteComment(
 
     return { success: true, message: "Komentar berhasil dihapus." };
   } catch {
-    return { success: true, message: "Komentar berhasil dihapus (Mode Lokal)." };
+    return { success: false, message: "Gagal terhubung ke database. Komentar tidak dihapus." };
   }
 }

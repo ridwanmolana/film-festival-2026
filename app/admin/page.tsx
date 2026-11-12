@@ -14,8 +14,13 @@ import {
   Download,
 } from "lucide-react";
 import Link from "next/link";
+import { unstable_noStore } from "next/cache";
+
+export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
 
 export default async function AdminDashboardOverviewPage() {
+  unstable_noStore();
   const supabase = await createClient();
 
   // Load baseline statistics from database

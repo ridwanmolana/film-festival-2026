@@ -11,9 +11,14 @@ import { CommunityComments } from "@/components/community-comments";
 import { PublicNavbar } from "@/components/public-navbar";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, MapPin, Sparkles } from "lucide-react";
-import Link from "next/link";
+import { unstable_noStore } from "next/cache";
+
+// Comments and votes change at runtime; never serve a stale cached homepage.
+export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
 
 export default async function HomePage() {
+  unstable_noStore();
   const [films, votingStatus, votingStats, comments, eventSettings] = await Promise.all([
     getFilms(),
     getVotingStatus(),
@@ -55,7 +60,7 @@ export default async function HomePage() {
       {/* Community Comments Anchor Section (PRD Section 4D & 7: Moderated Comments) */}
       <section id="community" className="py-24 border-t border-slate-800/80 bg-slate-950/50 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <CommunityComments initialComments={comments} />
+          <CommunityComments initialComments={comments.comments} initialTotal={comments.total} />
         </div>
       </section>
 

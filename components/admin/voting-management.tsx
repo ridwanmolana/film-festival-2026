@@ -1,8 +1,13 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import type { VotingStatus, VotingStatisticsItem } from "@/types";
-import { toggleManualVotingClosure, getVotingCSVData } from "@/lib/admin/voting";
+import {
+  toggleManualVotingClosure,
+  getVotingCSVData,
+  clearAllVotes,
+} from "@/lib/admin/voting";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -14,6 +19,7 @@ import {
   CheckCircle2,
   AlertCircle,
   Trophy,
+  Trash2,
 } from "lucide-react";
 
 interface VotingManagementProps {
@@ -30,6 +36,30 @@ export function VotingManagement({
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [isExporting, setIsExporting] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
+
+  const handleClearVotes = () => {
+    const first = window.confirm(
+      "HAPUS SEMUA data voting? Semua prediksi Best Picture akan dihapus permanen. Tindakan ini tidak bisa dibatalkan."
+    );
+    if (!first) return;
+    const second = window.confirm(
+      "Konfirmasi terakhir: ketik OK untuk melanjutkan penghapusan total data voting."
+    );
+    if (!second) return;
+
+    setMessage(null);
+    startTransition(async () => {
+      const res = await clearAllVotes();
+      if (res.success) {
+        setStatus((prev) => ({ ...prev, total_votes: 0 }));
+        setMessage({ type: "success", text: res.message });
+        router.refresh();
+      } else {
+        setMessage({ type: "error", text: res.message });
+      }
+    });
+  };
 
   const handleToggleManual = (closeManually: boolean) => {
     const confirmPrompt = closeManually
@@ -105,17 +135,31 @@ export function VotingManagement({
           </p>
         </div>
 
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          disabled={isExporting}
-          onClick={handleExportCSV}
-          className="gap-1.5 text-xs font-semibold"
-        >
-          <Download className="w-4 h-4 text-amber-400" />
-          <span>{isExporting ? "Exporting CSV..." : "Export Voting Data (CSV)"}</span>
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={isExporting}
+            onClick={handleExportCSV}
+            className="gap-1.5 text-xs font-semibold"
+          >
+            <Download className="w-4 h-4 text-amber-400" />
+            <span>{isExporting ? "Exporting CSV..." : "Export Voting Data (CSV)"}</span>
+          </Button>
+
+          <Button
+            type="button"
+            variant="destructive"
+            size="sm"
+            disabled={isPending || status.total_votes === 0}
+            onClick={handleClearVotes}
+            className="gap-1.5 text-xs font-semibold"
+          >
+            <Trash2 className="w-4 h-4" />
+            <span>Clear All Votes</span>
+          </Button>
+        </div>
       </div>
 
       {message && (

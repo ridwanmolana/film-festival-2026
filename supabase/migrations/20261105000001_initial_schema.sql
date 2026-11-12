@@ -109,13 +109,13 @@ EXECUTE FUNCTION set_updated_at();
 
 -- ------------------------------------------------------------------------------
 -- 6. COMMENTS TABLE (PRD Section 4D, 7, 8)
--- Public comments submitted as 'pending', requiring administrator approval.
+-- Public comments are published instantly ('approved'); admins may hide them later.
 -- ------------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS comments (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   author_name TEXT NOT NULL,
   content TEXT NOT NULL,
-  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'hidden')),
+  status TEXT NOT NULL DEFAULT 'approved' CHECK (status IN ('pending', 'approved', 'hidden')),
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );

@@ -60,19 +60,19 @@ TO authenticated
 USING (auth.role() = 'authenticated');
 
 -- ------------------------------------------------------------------------------
--- 3. COMMENTS POLICIES (PRD Section 7 & 8)
--- - Only approved comments appear publicly.
--- - New public comments must be stored as 'pending'.
--- - Admins can read all, approve, hide, and delete comments.
+-- 3. COMMENTS POLICIES (PRD Section 4D, 7 & 8)
+-- - Comments are published instantly: every non-hidden comment is public.
+-- - New public comments are inserted as 'approved' (published immediately).
+-- - Admins can read all, approve/restore, hide, and delete comments.
 -- ------------------------------------------------------------------------------
 ALTER TABLE comments ENABLE ROW LEVEL SECURITY;
 
--- Public can only read approved comments
+-- Public can read every visible (non-hidden) comment
 CREATE POLICY "Public read approved comments"
 ON comments
 FOR SELECT
 TO public
-USING (status = 'approved');
+USING (status <> 'hidden');
 
 -- Admins can read all comments (pending, approved, hidden)
 CREATE POLICY "Admin read all comments"
@@ -81,12 +81,12 @@ FOR SELECT
 TO authenticated
 USING (auth.role() = 'authenticated');
 
--- Public visitors can submit comments with 'pending' status only
+-- Public visitors can submit comments; they are published immediately
 CREATE POLICY "Public submit pending comments"
 ON comments
 FOR INSERT
 TO public
-WITH CHECK (status = 'pending');
+WITH CHECK (status = 'approved');
 
 -- Admins can update comment status (approve/hide)
 CREATE POLICY "Admin update comments"
