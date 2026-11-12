@@ -2,7 +2,8 @@
 
 import { useState, useTransition, useRef } from "react";
 import type { Comment } from "@/types";
-import { submitComment, getApprovedComments, COMMENTS_PAGE_SIZE } from "@/lib/comments";
+import { submitComment, getApprovedComments } from "@/lib/comments";
+import { COMMENTS_PAGE_SIZE } from "@/lib/comments-config";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MessageSquare, Send, CheckCircle2, AlertCircle, Clock, ShieldCheck, Heart } from "lucide-react";

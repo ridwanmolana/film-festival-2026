@@ -3,19 +3,13 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { Comment, CommentStatus } from "@/types";
 import { revalidatePath } from "next/cache";
-
-export const COMMENTS_PAGE_SIZE = 10;
-export const ADMIN_COMMENTS_PAGE_SIZE = 50;
-
-export interface ApprovedCommentsResult {
-  comments: Comment[];
-  total: number;
-}
-
-export interface AdminCommentsResult {
-  comments: Comment[];
-  total: number;
-}
+import {
+  COMMENTS_PAGE_SIZE,
+  ADMIN_COMMENTS_PAGE_SIZE,
+  type ApprovedCommentsResult,
+  type AdminCommentsResult,
+  type SubmitCommentResult,
+} from "@/lib/comments-config";
 
 /**
  * Public: Get visible comments, paginated (PRD Section 4D & 7)
@@ -49,11 +43,6 @@ export async function getApprovedComments(
   }
 
   return { comments: [], total: 0 };
-}
-
-export interface SubmitCommentResult {
-  success: boolean;
-  message: string;
 }
 
 /**

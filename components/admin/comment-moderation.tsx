@@ -3,7 +3,8 @@
 import { useState, useTransition } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import type { Comment, CommentStatus } from "@/types";
-import { updateCommentStatus, deleteComment, ADMIN_COMMENTS_PAGE_SIZE } from "@/lib/comments";
+import { updateCommentStatus, deleteComment } from "@/lib/comments";
+import { ADMIN_COMMENTS_PAGE_SIZE } from "@/lib/comments-config";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
