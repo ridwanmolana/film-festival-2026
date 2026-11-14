@@ -12,11 +12,17 @@ const VOTING_DEADLINE_MS = new Date(EVENT_CONSTANTS.VOTING_DEADLINE_ISO).getTime
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-// CAPTCHA is mandatory in production. Accept literal "your-..." placeholders so
-// local dev keeps working, but a real-looking key must verify.
+// CAPTCHA is enforced when both Turnstile keys (secret + site key) are configured.
+// Accepts "your-..." placeholders in dev/demo without blocking voting.
 function isTurnstileEnforced(): boolean {
   const secret = process.env.TURNSTILE_SECRET_KEY;
-  return Boolean(secret) && !secret!.startsWith("your-");
+  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+  return (
+    Boolean(secret) &&
+    !secret!.startsWith("your-") &&
+    Boolean(siteKey) &&
+    !siteKey!.startsWith("your-")
+  );
 }
 
 /**
@@ -192,9 +198,8 @@ export async function submitPrediction(
     };
   }
 
-  // 4. CAPTCHA verification (Cloudflare Turnstile) - required in production
-  const isProduction = process.env.NODE_ENV === "production";
-  if (isTurnstileEnforced() || isProduction) {
+  // 4. CAPTCHA verification (Cloudflare Turnstile) - enforced when keys are configured
+  if (isTurnstileEnforced()) {
     if (!captchaToken) {
       return { success: false, message: "Verifikasi CAPTCHA diperlukan sebelum mengirim prediksi." };
     }
